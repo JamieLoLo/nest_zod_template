@@ -16,7 +16,12 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // 開啟 http://localhost:3000/api 即可查看
+
+  // 開啟 http://localhost:3000/api 即可查看
+  // 只在開發環境下啟用 Swagger
+  if (process.env.NODE_ENV !== 'production') {
+    SwaggerModule.setup('api', app, document);
+  }
 
   await app.listen(3000);
 }
