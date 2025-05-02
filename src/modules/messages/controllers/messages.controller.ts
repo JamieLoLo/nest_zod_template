@@ -1,9 +1,8 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
-import {
-  CreateMessageDto,
-  CreateMessageDtoClass,
-} from '../schemas/create-message.schema';
+import { ApiTags, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { CreateMessageDtoClass } from '../schemas/create-message.schema';
 
+@ApiTags('Messages') // 分類名稱
 @Controller('messages')
 export class MessagesController {
   @Get()
@@ -12,11 +11,15 @@ export class MessagesController {
   }
 
   @Post()
+  @ApiBody({ type: CreateMessageDtoClass }) // 顯示 Request Body Schema
+  @ApiResponse({ status: 400, description: 'Zod validation failed' }) // ❌ 驗證失敗
+  @ApiResponse({ status: 500, description: 'Internal server error' }) // ❌ 未預期錯誤
   createMessage(@Body() body: CreateMessageDtoClass) {
-    return body as CreateMessageDto;
+    return body;
   }
 
   @Get(':id')
+  @ApiResponse({ status: 200, description: 'Fetched single message' })
   getMessage(@Param('id') id: string) {
     return { id };
   }

@@ -1,6 +1,7 @@
 // modules/messages/schemas/create-message.schema.ts
 import { z } from 'zod';
 import { UseZodSchema } from '../../../common/decorators/zod-schema.decorator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export const CreateMessageSchema = z.object({
   content: z.string(),
@@ -12,7 +13,10 @@ export type CreateMessageDto = z.infer<typeof CreateMessageSchema>;
 // 如果 controller 中使用的是 type（CreateMessageDto），由於 type 在編譯後會被移除，pipe 就無法取得 metadata
 // 此寫法的好處是：將 zod schema 與 class 型別分離，使 schema 可在其他場景重用（如前端驗證、表單等）
 @UseZodSchema('createMessage')
-export class CreateMessageDtoClass {} // 給 pipe 用來取 metadata 的類別，不直接用來驗證
+export class CreateMessageDtoClass {
+  @ApiProperty({ example: 'Hello, world!' })
+  content: string;
+} // 給 pipe 用來取 metadata 的類別，不直接用來驗證
 
 // 總結
 // ✅ CreateMessageSchema 是驗證規則本體（用來做型別驗證）
